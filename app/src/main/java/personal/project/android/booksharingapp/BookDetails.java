@@ -12,7 +12,7 @@ public class BookDetails {
 
    private Date timeStamp;
 
-   public BookDetails(){};
+   public BookDetails(){}
     public BookDetails(String userId, String url, String author, String title, String publisher, String genre, Date timeStamp) {
         this.userId = userId;
         this.url = url;
