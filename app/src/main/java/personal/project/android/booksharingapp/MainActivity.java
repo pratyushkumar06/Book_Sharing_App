@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -34,7 +38,27 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
 
+        FloatingActionButton fab=findViewById(R.id.floatingActionButton2);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(MainActivity.this,PostActivity.class);
+                startActivity(intent);
+            }
+        });
         mAuth=FirebaseAuth.getInstance();
+    }
+
+    @Override
+    protected void onStart() {
+        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+        if(user!=null && user.getDisplayName()==null && user.getPhotoUrl()==null){  //As creating a profile is an essential process it will cause to create profile
+            Intent in=new Intent(MainActivity.this,Account.class);
+            startActivity(in);
+            Toast.makeText(MainActivity.this,"Create Profile to proceed",Toast.LENGTH_LONG).show();
+        }
+        super.onStart();
     }
 
     @Override
@@ -51,6 +75,10 @@ public class MainActivity extends AppCompatActivity {
             Intent in=new Intent(MainActivity.this, Login.class);
             startActivity(in);
             finish();
+        }
+        if(id==R.id.settings){
+            Intent in=new Intent(MainActivity.this, Account.class);
+            startActivity(in);
         }
         return super.onOptionsItemSelected(item);
     }
