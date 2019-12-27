@@ -83,8 +83,8 @@ public class HomeFragment extends Fragment {
                             }
                             for (DocumentChange documentChange : queryDocumentSnapshots.getDocumentChanges()) {
                                 if (documentChange.getType() == DocumentChange.Type.ADDED) {
-                                   // String blogId = documentChange.getDocument().getId();
-                                    final BookDetails bookDetails = documentChange.getDocument().toObject(BookDetails.class);//From here the data is sent to the constructor for gettong the details
+                                    String blogId = documentChange.getDocument().getId();
+                                    final BookDetails bookDetails = documentChange.getDocument().toObject(BookDetails.class).withId(blogId);//From here the data is sent to the constructor for gettong the details
                                     final String bloguid = documentChange.getDocument().getString("user_id");
                                     if (isdataloadedfirstTime) {
                                         list.add(bookDetails);
@@ -140,7 +140,7 @@ public class HomeFragment extends Fragment {
                             if (documentChange.getType() == DocumentChange.Type.ADDED) {                   //Everytime the data is added the document goes to the BlogPost class and is added to list
                                 final String blogId=documentChange.getDocument().getId();
                                 final String bloguid = documentChange.getDocument().getString("user_id");
-                                final BookDetails bookDetails = documentChange.getDocument().toObject(BookDetails.class);
+                                final BookDetails bookDetails = documentChange.getDocument().toObject(BookDetails.class).withId(blogId);
                                 list.add(bookDetails);
                              /*   firebaseFirestore.collection("users").document(bloguid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                     @Override

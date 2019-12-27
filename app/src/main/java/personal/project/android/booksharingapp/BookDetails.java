@@ -2,7 +2,7 @@ package personal.project.android.booksharingapp;
 
 import java.util.Date;
 
-public class BookDetails {
+public class BookDetails extends BlogPostId{
    private String userId;
    private String url;
    private String author;

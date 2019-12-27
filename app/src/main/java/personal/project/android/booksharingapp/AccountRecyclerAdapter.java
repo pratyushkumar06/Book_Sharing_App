@@ -8,9 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -31,7 +33,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapter.ViewHolder> {
+public class AccountRecyclerAdapter extends RecyclerView.Adapter<AccountRecyclerAdapter.ViewHolder> {
 
     public List<BookDetails> bookDetails;
     // public List<User> userList;
@@ -40,16 +42,16 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     private Boolean button=true;
     private FirebaseAuth auth;
 
-    public HomeRecyclerAdapter(){};
+    public AccountRecyclerAdapter(){};
 
-    public HomeRecyclerAdapter(List<BookDetails> bookDetails){
+    public AccountRecyclerAdapter(List<BookDetails> bookDetails){
         this.bookDetails=bookDetails;   //Used for getting the values of the passed list
         //  this.userList=userList;
     }
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem,parent,false);
+    public AccountRecyclerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v= LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem2,parent,false);
         context=parent.getContext();
 
         firebaseFirestore=FirebaseFirestore.getInstance();
@@ -57,11 +59,11 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         auth=FirebaseAuth.getInstance();
 
 
-        return new ViewHolder(v);
+        return new AccountRecyclerAdapter.ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final AccountRecyclerAdapter.ViewHolder holder, final int position) {
 
         holder.init();
         final String uid=bookDetails.get(position).getUserId();
@@ -120,6 +122,33 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             }
         });
 
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firebaseFirestore.collection("Posts").document(BlogPostid)
+                        .delete()
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(context, "Successfully Deleted", Toast.LENGTH_LONG).show();
+                                Log.d("TAG", "DocumentSnapshot successfully deleted!");
+                                bookDetails.remove(position);
+                                notifyItemRemoved(position);
+                                notifyDataSetChanged();
+
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.w("TAG", "Error deleting document", e);
+                            }
+                        });
+
+            }
+        });
+
+
     }
 
     @Override
@@ -131,6 +160,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
         private View view;
         private TextView title,author,publisher,genre,cmntct,name,date;
         private ImageView cbtn,user,post;
+        private ImageView delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             view=itemView;
@@ -142,13 +172,14 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             genre=view.findViewById(R.id.genre);
             cbtn=view.findViewById(R.id.comment);
             cmntct=view.findViewById(R.id.commentcnt);
+            delete=view.findViewById(R.id.del);
 
         }
 
         public void setValues(String au,String pu,String ge){
-           author.setText(au);
-           publisher.setText(pu);
-           genre.setText(ge);
+            author.setText(au);
+            publisher.setText(pu);
+            genre.setText(ge);
         }
         public void setname(String n){
             name=view.findViewById(R.id.name);
