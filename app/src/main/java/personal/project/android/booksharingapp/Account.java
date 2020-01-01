@@ -153,17 +153,6 @@ public class Account extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        if(mAuth.getCurrentUser()==null){
-            finish();
-            Intent intent=new Intent(Account.this,MainActivity.class);
-            startActivity(intent);
-
-        }
-    }
 
     @SuppressLint("NewApi")
     private void saveUserInfo() {
@@ -223,6 +212,9 @@ public class Account extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
                                             Toast.makeText(Account.this,"Success",Toast.LENGTH_SHORT).show();
+                                            Intent intent=new Intent(Account.this,MainActivity.class);
+                                            startActivity(intent);
+                                            finish();
                                         }
                                         else{
                                             Toast.makeText(Account.this,"Error",Toast.LENGTH_SHORT).show();
@@ -237,6 +229,39 @@ public class Account extends AppCompatActivity {
         }
 
     }
+
+    @Override
+    protected void onStart() {
+        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
+
+        if(mAuth.getCurrentUser()==null){
+            finish();
+            Intent intent=new Intent(Account.this,MainActivity.class);
+            startActivity(intent);
+
+        }
+        if(user!=null && user.getDisplayName()==null && user.getPhotoUrl()==null){  //As creating a profile is an essential process it will cause to create profile
+            HashMap<String ,String> map =new HashMap<>();
+            map.put("Url","https://firebasestorage.googleapis.com/v0/b/fir-storage-1739c.appspot.com/o/profile_pic.png?alt=media&token=e5da74aa-3d7b-4fbc-b094-d51cd9919e23");
+            map.put("name","username");
+            String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+            firebaseFirestore.collection("users").document(user_id)
+                    .set(map)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if(task.isSuccessful()){
+                                Toast.makeText(Account.this,"Success",Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(Account.this,"Error",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+        super.onStart();
+    }
+
     private void uploadFile(Bitmap bitmap) {
 
         FirebaseStorage storage = FirebaseStorage.getInstance();
@@ -249,7 +274,6 @@ public class Account extends AppCompatActivity {
         byte[] data = baos.toByteArray();
         final UploadTask uploadTask = ImagesRef.putBytes(data);
 
-        System.out.println("Error2");
 
         uploadTask.addOnFailureListener(new OnFailureListener() {
             @Override
@@ -284,7 +308,7 @@ public class Account extends AppCompatActivity {
 
                             assert downloadUri != null;
                             Log.i("seeThisUri", downloadUri.toString());// This is the one you should store
-
+                            getProgressDialog.dismiss();
                             //ref.child("imageURL").setValue(downloadUri.toString());
 
 

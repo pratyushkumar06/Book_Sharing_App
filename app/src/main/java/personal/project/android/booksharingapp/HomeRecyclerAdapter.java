@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,13 +21,16 @@ import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -61,7 +65,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
 
         holder.init();
         final String uid=bookDetails.get(position).getUserId();
@@ -120,6 +124,30 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             }
         });
 
+        holder.cart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String curr_id=FirebaseAuth.getInstance().getUid();
+
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("url", bookDetails.get(position).getUrl());
+                map.put("title",bookDetails.get(position).getTitle());
+                map.put("author", bookDetails.get(position).getAuthor());
+                map.put("publisher", bookDetails.get(position).getPublisher());
+                map.put("genre", bookDetails.get(position).getGenre());
+                map.put("timeStamp", FieldValue.serverTimestamp());
+                if(curr_id!=null)
+                firebaseFirestore.collection("users/").document(curr_id).collection("/Cart").add(map).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if(task.isSuccessful()){
+                            Toast.makeText(context,"Added to Cart",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
     }
 
     @Override
@@ -129,7 +157,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private View view;
-        private TextView title,author,publisher,genre,cmntct,name,date;
+        private TextView title,author,publisher,genre,cmntct,name,date,cart;
         private ImageView cbtn,user,post;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -142,6 +170,7 @@ public class HomeRecyclerAdapter extends RecyclerView.Adapter<HomeRecyclerAdapte
             genre=view.findViewById(R.id.genre);
             cbtn=view.findViewById(R.id.comment);
             cmntct=view.findViewById(R.id.commentcnt);
+            cart=view.findViewById(R.id.cart);
 
         }
 

@@ -8,22 +8,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import java.util.HashMap;
+
 import personal.project.android.booksharingapp.ui.login.Login;
 
 public class MainActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(navView, navController);
 
         FloatingActionButton fab=findViewById(R.id.floatingActionButton2);
+        firebaseFirestore=FirebaseFirestore.getInstance();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +86,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if(id==R.id.settings){
             Intent in=new Intent(MainActivity.this, Account.class);
+            startActivity(in);
+        }
+        if(id==R.id.cart){
+            Intent in=new Intent(MainActivity.this, Cart.class);
             startActivity(in);
         }
         return super.onOptionsItemSelected(item);

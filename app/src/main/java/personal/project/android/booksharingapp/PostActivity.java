@@ -162,7 +162,7 @@ public class PostActivity extends AppCompatActivity {
         FirebaseStorage storage = FirebaseStorage.getInstance();
         final StorageReference storageRef = storage.getReference();
         System.out.println(auth.getCurrentUser().getUid());
-        final StorageReference ImagesRef = storageRef.child("books/"+ auth.getCurrentUser().getUid()+".jpg");
+        final StorageReference ImagesRef = storageRef.child("sbooks/").child(uri.getLastPathSegment());
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);

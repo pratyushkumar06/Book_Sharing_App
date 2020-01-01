@@ -13,7 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Comments"></activity>
+        <activity android:name=".Cart"
+            android:label="Cart"></activity>
+        <activity android:name=".Comments"
+            android:label="Comments"/>
         <activity android:name=".Account" />
         <activity android:name=".PostActivity" />
         <activity
