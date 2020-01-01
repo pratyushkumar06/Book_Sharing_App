@@ -14,3 +14,8 @@ Progress Of the App
 - Added the Cart function where the user can add books to his personal cart and remove when they want.
 <br>
 Firestore Doesn't Support Index search Querying so I tried Using Algolia but I found out that the Spark plan on Firebase (the free-tier that I was using) doesn't allow outbound requests to 3rd-party APIs like Algolia so I couldn't implement the search Feature.
+<br>
+
+<img src=https://github.com/pratyushkumar06/Book_Sharing_App/blob/master/home.jpeg width="240" height="400" />      <img src=https://github.com/pratyushkumar06/Book_Sharing_App/blob/master/account.jpeg width="240" height="400" />
+<img src=https://github.com/pratyushkumar06/Book_Sharing_App/blob/master/signin.jpeg width="240" height="400" />    <img src=https://github.com/pratyushkumar06/Book_Sharing_App/blob/master/cart.jpeg width="240" height="400" />
+<img src=https://github.com/pratyushkumar06/Book_Sharing_App/blob/master/post.jpeg width="240" height="400" />
